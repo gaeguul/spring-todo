@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class TodoListApplicationTests {
 
 	@Autowired
-	private  TodoRepository todoRepository;
+	private TodoRepository todoRepository;
 
 	@Test
 	void testJpa() {
