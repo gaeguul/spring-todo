@@ -1,9 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Todo</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous">
+    </script>
 </head>
+<style>
+    .modal {
+        position:absolute;
+        width:100%;
+        height:100%;
+        background:black;
+        top:0;
+        left:0;
+        display:none;
+    }
+</style>
 <body>
 <h1>투두리스트</h1>
 <form th:action="@{/todo/create}" method="post">
@@ -18,16 +33,79 @@
         <th>번호</th>
         <th>할 일</th>
         <th>수행 여부</th>
-    </tr>
+        <th>삭제</th>
     </thead>
     <tbody>
     <tr th:each="todo : ${todoList}">
         <td th:text="${todo.id}"></td>
         <td th:text="${todo.content}"></td>
         <td th:text="${todo.completed}"></td>
+        <td>
+            <button id="delete-btn" th:onClick="deleteItem([[${todo.id}]])">삭제</button>
+        </td>
+        <td>
+            <button id="update-btn" th:onClick="openModal([[${todo.id}]])">수정</button>
+        </td>
     </tr>
     </tbody>
 </table>
+<div class="modal">
+    <div class="modal-content">
+        <input id="update" placeholder="수정할 내용을 입력하세요"/>
+        <button id="complete-btn" type="submit" onclick="updateTodo()">완료</button>
+    </div>
 
+</div>
+<script>
+
+    function deleteItem(id) {
+        console.log(id);
+        const url = "/todo/delete/"+id
+        $.ajax({
+                type: 'delete',
+                url: url,
+        }).done( function () {
+                console.log("Success deletion");
+                window.location.href = '/';
+        }).fail( function (error) {
+                alert(JSON.stringify(error));
+        });
+    }
+
+    let todoId = "";
+
+    function openModal(id) {
+        todoId = id;
+        $(".modal").fadeIn();
+    }
+
+    function updateTodo() {
+        console.log(todoId);
+        var prevContent = document.getElementById("update").value;
+        var updateContent = prevContent;
+        console.log(updateContent);
+        const url = "/todo/update/" + todoId;
+
+        $.ajax({
+            type: 'patch',
+            url: url,
+            contentType:'application/json; charset=utf-8',
+            data: updateContent,
+        }).done(
+            function() {
+                alert("할 일이 수정되었습니다.");
+                window.location.href='/';
+            }
+        ).fail(
+            function(error) {
+                alert(JSON.stringify(error));
+            }
+        );
+
+        $(".modal").fadeOut();
+    }
+
+
+</script>
 </body>
 </html>

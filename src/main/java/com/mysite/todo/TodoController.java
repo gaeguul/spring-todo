@@ -3,9 +3,7 @@ package com.mysite.todo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,6 +33,19 @@ public class TodoController {
     @PostMapping("/todo/create")
     public String todoCreate(@RequestParam("content") String content) {
         this.todoService.createTodo(content);
+        return "redirect:/todo";
+    }
+
+    @DeleteMapping("/todo/delete/{id}")
+    public String todoDelete(@PathVariable("id") Integer id) {
+        this.todoService.deleteTodo(id);
+        return "redirect:/todo";
+    }
+
+    @PatchMapping("/todo/update/{id}")
+    public String todoUpdate(@RequestBody String content,
+                             @PathVariable("id") Integer id) {
+        this.todoService.updateTodo(id, content);
         return "redirect:/todo";
     }
 }
