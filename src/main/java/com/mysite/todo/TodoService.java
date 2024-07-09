@@ -11,7 +11,14 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
 
-    public List<Todo> getList() {
+    public List<Todo> getTodos() {
         return this.todoRepository.findAll();
+    }
+
+    public void createTodo(String content) {
+        Todo todo = new Todo();
+        todo.setContent(content);
+        todo.setCompleted(false);
+        this.todoRepository.save(todo);
     }
 }
