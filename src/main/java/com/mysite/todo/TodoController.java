@@ -1,52 +1,41 @@
 package com.mysite.todo;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/todo")
 public class TodoController {
 
     private final TodoService todoService;
 
-    @RequestMapping("/todo")
-    public String todo(Model model) {
-        List<Todo> todoList = this.todoService.getTodos();
-        model.addAttribute("todoList", todoList);
-        return "todo";
+    @GetMapping("")
+    public List<Todo> todoListGet() {
+        return this.todoService.getTodoList();
     }
 
-    /**
-     * localhost:8080/로 진입할 경우 todolist를 보여주는 화면으로 리다이렉트
-     *
-     * @return todo.html로 리다이렉트
-     */
-    @RequestMapping("/")
-    public String root() {
-        return "redirect:/todo";
+    @GetMapping("/{id}")
+    public Optional<Todo> todoGet(Integer id) {
+        return this.todoService.findTodoById(id);
     }
 
-    @PostMapping("/todo/create")
-    public String todoCreate(@RequestParam("content") String content) {
-        this.todoService.createTodo(content);
-        return "redirect:/todo";
+    @PostMapping("/create")
+    public Todo todoCreate(@RequestParam("content") String content) {
+        return this.todoService.createTodo(content);
     }
 
-    @DeleteMapping("/todo/delete/{id}")
-    public String todoDelete(@PathVariable("id") Integer id) {
-        this.todoService.deleteTodo(id);
-        return "redirect:/todo";
+    @DeleteMapping("/delete/{id}")
+    public Integer todoDelete(@PathVariable("id") Integer id) {
+        return this.todoService.deleteTodo(id);
     }
 
-    @PatchMapping("/todo/update/{id}")
-    public String todoUpdate(@RequestBody String content,
-                             @PathVariable("id") Integer id) {
-        this.todoService.updateTodo(id, content);
-        return "redirect:/todo";
+    @PutMapping("/update/{id}")
+    public Todo todoUpdate(@RequestBody Todo todo, @PathVariable("id") Integer id) {
+        return this.todoService.updateTodo(id, todo);
     }
 }
 
