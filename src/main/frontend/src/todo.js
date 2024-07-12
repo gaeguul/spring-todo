@@ -50,7 +50,10 @@ function Todo() {
   const handleTodoUpdate = async (e) => {
     e.preventDefault();
     try {
-      const updatedTodo = { ...selectedTodo, content: updatedContent };
+      const updatedTodo = {
+        ...selectedTodo,
+        content: updatedContent,
+      };
       const result = await axios.put(
         `/api/todo/update/${updatedTodo.id}`,
         updatedTodo
@@ -82,6 +85,19 @@ function Todo() {
     }
   };
 
+  const handleCheckbox = async (e, todo) => {
+    const updatedTodo = { ...todo, completed: e.target.checked };
+    setTodoList(
+      todoList.map((t) => (t.id === updatedTodo.id ? updatedTodo : t))
+    );
+
+    try {
+      await axios.put(`/api/todo/update/${updatedTodo.id}`, updatedTodo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h1>🌻 Todo</h1>
@@ -92,12 +108,15 @@ function Todo() {
       <div>
         {todoList.map((todo) => {
           return (
-            <li
-              key={todo.id}
-              className={todo.completed ? "completed" : ""}
-              onClick={() => handleTodoClick(todo)}
-            >
-              {todo.content} {todo.completed ? "✓" : ""}
+            <li key={todo.id} className={todo.completed ? "completed" : ""}>
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={(e) => handleCheckbox(e, todo)}
+              />
+              <label onClick={() => handleTodoClick(todo)}>
+                {todo.content}
+              </label>
             </li>
           );
         })}
