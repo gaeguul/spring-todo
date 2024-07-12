@@ -42,6 +42,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(prevTodo.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다. id = " + id));
         todo.setContent(prevTodo.getContent());
+        todo.setCompleted(prevTodo.isCompleted());
         this.todoRepository.save(todo);
         return todo;
     }
