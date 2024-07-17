@@ -1,4 +1,4 @@
-package com.mysite.todo;
+package com.mysite.todo.todolist;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
